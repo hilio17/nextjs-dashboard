@@ -44,11 +44,27 @@ const FormSchema = z.object({
   date: z.string(),
 });
 
+const FromSchemaCustomer = z.object({
+  id: z.string(),
+  name: z.string({ invalid_type_error: "Por favor llene este campo" }),
+  email: z.string({ invalid_type_error: "Por favor llene este campo" }).email(),
+  image_url: z.string({ invalid_type_error: "Por favor llene este campo" })
+})
+
 export type State = {
   errors?: {
     customerId?: string[];
     amount?: string[];
     status?: string[];
+  };
+  message?: string | null;
+};
+
+export type StateCustomers = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    image_url?: string[];
   };
   message?: string | null;
 };
@@ -85,13 +101,49 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
 
 
+
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
 
+
+
+const CreateCustomers = FromSchemaCustomer.omit({id: true})
+
+export async function createCustomers(prevState: StateCustomers, formData: FormData) {
+
+  
+          const validatedFields = CreateCustomers.safeParse({
+            name: formData.get('name'),
+            email: formData.get('email'),
+            image_url: formData.get('image_url'),
+          });
+
+          console.log(validatedFields)
+          if (!validatedFields.success) {
+            return {
+              errors: validatedFields.error.flatten().fieldErrors,
+              message: 'Missing Fields. Failed to Create Invoice.',
+            };
+          }
+        
+          const { name, email, image_url } = validatedFields?.data;
+
+          try {
+            await sql` INSERT INTO customers (name, email, image_url) VALUES (${name}, ${email}, ${image_url})`;
+          } catch (error) {
+            return {
+              message: 'Database Error: Failed to Create Customer.',
+            };
+          }
+
+          revalidatePath('/dashboard/customers');
+          redirect('/dashboard/customers');
+}
+
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
-export async function updateInvoice(  id: string, prevState: State, formData: FormData,) {
+export async function updateInvoice(id: string, prevState: State, formData: FormData,) {
 
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -99,13 +151,13 @@ export async function updateInvoice(  id: string, prevState: State, formData: Fo
     status: formData.get('status'),
   });
 
-   if (!validatedFields.success) {
+  if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Update Invoice.',
     };
   }
- 
+
   const { customerId, amount, status } = validatedFields.data;
   const amountInCents = amount * 100;
 
