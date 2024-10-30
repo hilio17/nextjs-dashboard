@@ -94,6 +94,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   try {
     await sql` INSERT INTO invoices (customer_id, amount, status, date) VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
   } catch (error) {
+    console.log(error);
     return {
       message: 'Database Error: Failed to Create Invoice.',
     };
@@ -132,6 +133,7 @@ export async function createCustomers(prevState: StateCustomers, formData: FormD
           try {
             await sql` INSERT INTO customers (name, email, image_url) VALUES (${name}, ${email}, ${image_url})`;
           } catch (error) {
+            console.log(error)
             return {
               message: 'Database Error: Failed to Create Customer.',
             };
@@ -169,6 +171,7 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
     `;
 
   } catch (error) {
+    console.log(error)
     return {
       message: 'Database Error: Failed to Create Invoice.',
     };
@@ -184,6 +187,7 @@ export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
   } catch (error) {
+    console.log(error)
     return {
       message: 'Database Error: Failed to Create Invoice.',
     };
