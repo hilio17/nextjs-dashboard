@@ -1,4 +1,4 @@
-// import Form from '@/app/ui/customers/edit-form';
+import Form from '@/app/ui/customers/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchCustomersById, } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
@@ -19,13 +19,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 breadcrumbs={[
                     { label: 'Clientes', href: '/dashboard/customers' },
                     {
-                        label: 'Editar Clientes',
+                        label: 'Editar Cliente',
                         href: `/dashboard/customers/${id}/edit`,
                         active: true,
                     },
                 ]}
             />
-            {/* <Form customers={customers} /> */}
+            <Form customers={customers} />
         </main>
     );
 }

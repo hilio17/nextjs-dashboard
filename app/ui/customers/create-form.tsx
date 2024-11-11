@@ -5,11 +5,11 @@ import { UserIcon, AtSymbolIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createCustomers, StateCustomers } from '@/app/lib/actions';
 import { useActionState } from 'react';
+import LoadingSpinner from '../LoadingSpinner';
 
 export default function Form() {
     const initialState: StateCustomers = { message: null, errors: {} };
-    const [state, formAction] = useActionState(createCustomers, initialState);
-    console.log(state)
+    const [state, formAction, isPending] = useActionState(createCustomers, initialState);
 
     return (
         <form action={formAction}>
@@ -102,7 +102,7 @@ export default function Form() {
                     >
                         Cancelar
                     </Link>
-                    <Button type="submit" >Registrar Cliente</Button>
+                    <Button type="submit" aria-disabled={isPending}>{isPending ? <LoadingSpinner></LoadingSpinner> : "Registrar cliente"}</Button>
                 </div>
             </div>
         </form>

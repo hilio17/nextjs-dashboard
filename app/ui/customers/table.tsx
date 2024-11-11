@@ -1,8 +1,11 @@
+
+
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
-import { FormattedCustomersTable,} from '@/app/lib/definitions';
-import { CreateCustomers } from './buttons';
+import { FormattedCustomersTable, } from '@/app/lib/definitions';
+import { CreateCustomers, DeleteCustomers, UpdateCustomers } from './buttons';
+
 
 
 export default async function CustomersTable({
@@ -10,6 +13,7 @@ export default async function CustomersTable({
 }: {
   customers: FormattedCustomersTable[];
 }) {
+
   return (
     <div className="w-full">
       <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
@@ -82,6 +86,9 @@ export default async function CustomersTable({
                     <th scope="col" className="px-4 py-5 font-medium">
                       Total Pagado
                     </th>
+                    <th scope="col" className="px-4 py-5 font-medium">
+                      <span className="sr-only">Editar</span>
+                    </th>
                   </tr>
                 </thead>
 
@@ -109,10 +116,16 @@ export default async function CustomersTable({
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.total_pending}
                       </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
+                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.total_paid}
                       </td>
-                    </tr>
+                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                        <div className="flex justify-end gap-3">
+                          <UpdateCustomers id={customer.id} />
+                          <DeleteCustomers  id={customer.id}/>
+                        </div>
+                      </td>
+                    </tr>              
                   ))}
                 </tbody>
               </table>

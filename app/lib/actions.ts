@@ -48,7 +48,7 @@ const FromSchemaCustomer = z.object({
   id: z.string(),
   name: z.string({ invalid_type_error: "Por favor llene este campo" }),
   email: z.string({ invalid_type_error: "Por favor llene este campo" }).email(),
-  image_url: z.string({ invalid_type_error: "Por favor llene este campo" })
+  image_url: z.string({ invalid_type_error: "Por favor llene este campo" }).startsWith('/', {message: 'La palabra debe comenzar con /' })
 })
 
 export type State = {
@@ -109,38 +109,38 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
 
 
-const CreateCustomers = FromSchemaCustomer.omit({id: true})
+const CreateCustomers = FromSchemaCustomer.omit({ id: true })
 
 export async function createCustomers(prevState: StateCustomers, formData: FormData) {
 
-  
-          const validatedFields = CreateCustomers.safeParse({
-            name: formData.get('name'),
-            email: formData.get('email'),
-            image_url: formData.get('image_url'),
-          });
 
-          console.log(validatedFields)
-          if (!validatedFields.success) {
-            return {
-              errors: validatedFields.error.flatten().fieldErrors,
-              message: 'Missing Fields. Failed to Create Invoice.',
-            };
-          }
-        
-          const { name, email, image_url } = validatedFields?.data;
+  const validatedFields = CreateCustomers.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
 
-          try {
-            await sql` INSERT INTO customers (name, email, image_url) VALUES (${name}, ${email}, ${image_url})`;
-          } catch (error) {
-            console.log(error)
-            return {
-              message: 'Database Error: Failed to Create Customer.',
-            };
-          }
+  console.log(validatedFields)
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
 
-          revalidatePath('/dashboard/customers');
-          redirect('/dashboard/customers');
+  const { name, email, image_url } = validatedFields?.data;
+
+  try {
+    await sql` INSERT INTO customers (name, email, image_url) VALUES (${name}, ${email}, ${image_url})`;
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create Customer.',
+    };
+  }
+
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
 }
 
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
@@ -183,6 +183,46 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
   redirect('/dashboard/invoices');
 }
 
+
+
+const UpdateCustomer = FromSchemaCustomer.omit({ id: true });
+export async function updateCustomer(id: string, prevState: StateCustomers, formData: FormData,) {
+
+  const validatedFields = UpdateCustomer.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+  }
+
+  const { name, email, image_url } = validatedFields.data;
+
+  try {
+    await sql`
+      UPDATE customers
+      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      WHERE id = ${id}
+    `;
+
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Update Customers.',
+    };
+  }
+
+
+
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
 export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
@@ -194,5 +234,18 @@ export async function deleteInvoice(id: string) {
   }
 
   revalidatePath('/dashboard/invoices');
+}
+
+export async function deleteCustomers(id: string) {
+  try {
+    await sql`DELETE FROM customers WHERE id = ${id}`;
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create Customers.',
+    };
+  }
+
+  revalidatePath('/dashboard/customers');
 }
 

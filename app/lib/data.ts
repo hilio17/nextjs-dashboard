@@ -168,13 +168,14 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchCustomersById(id: string) {
   try {
-    const customer = await sql<CustomerForm>`
-      SELECT  * FROM customers WHERE id = ${id}`;
+    const data = await sql<CustomerForm>`
+      SELECT  * FROM customers WHERE id = ${id};`
       
-    return customer;
+     const customer = data.rows.map((custo) => ({...custo}))
+     return customer[0];
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
+    throw new Error('Failed to fetch customer.');
   }
 }
 
