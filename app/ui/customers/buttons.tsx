@@ -36,14 +36,14 @@ export function UpdateCustomers({ id }: { id: string }) {
 
 export function DeleteCustomers({ id, }: { id: string }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false); 
-  const [actionConfirmed, setActionConfirmed] = useState(false);
+  //const [actionConfirmed, setActionConfirmed] = useState(false);
 
 
   const handleOpenDialog = () => { setIsDialogOpen(true); };
   const handleCloseDialog = () => { setIsDialogOpen(false); };
   const handleConfirm = () => {
     const deleteCustomersWithId = deleteCustomers.bind(null, id);
-    setActionConfirmed(true);
+    //setActionConfirmed(true);
     setIsDialogOpen(false);
     deleteCustomersWithId()
   };

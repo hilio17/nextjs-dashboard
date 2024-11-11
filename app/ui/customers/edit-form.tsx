@@ -7,8 +7,9 @@ import { StateCustomers, updateCustomer} from '@/app/lib/actions';
 import { UserIcon, AtSymbolIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
+import { CustomerForm } from '@/app/lib/definitions';
 
-const editCustomerEdit = ( {customers} : {customers: any}) => {
+const EditCustomerEdit = ( {customers} : {customers: CustomerForm}) => {
   const initialState: StateCustomers = { message: null, errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customers.id);
   const [state, formAction] = useActionState(updateCustomerWithId, initialState);
@@ -116,4 +117,4 @@ const editCustomerEdit = ( {customers} : {customers: any}) => {
   )
 }
 
-export default editCustomerEdit
+export default EditCustomerEdit;

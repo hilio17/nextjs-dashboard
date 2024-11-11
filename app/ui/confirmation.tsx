@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'; function ConfirmDialog({ title, onConfirm, onCancel, subTitle, }: { title: string, onConfirm: any, onCancel: any, subTitle?: string }) {
+import React, { MouseEventHandler } from 'react'; function ConfirmDialog({ title, onConfirm, onCancel, subTitle, }: { title: string, onConfirm: MouseEventHandler, onCancel: MouseEventHandler, subTitle?: string }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">

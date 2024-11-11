@@ -34,14 +34,14 @@ export function UpdateInvoice({ id }: { id: string }) {
 
 export function DeleteInvoice({ id }: { id: string }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false); 
-  const [actionConfirmed, setActionConfirmed] = useState(false);
+  //const [actionConfirmed, setActionConfirmed] = useState(false);
 
 
   const handleOpenDialog = () => { setIsDialogOpen(true); };
   const handleCloseDialog = () => { setIsDialogOpen(false); };
   const handleConfirm = () => {
     const deleteInvoiceWithId = deleteInvoice.bind(null, id);
-    setActionConfirmed(true);
+    //setActionConfirmed(true);
     setIsDialogOpen(false);
     deleteInvoiceWithId()
   };
